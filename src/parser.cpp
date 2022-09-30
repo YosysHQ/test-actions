@@ -291,6 +291,7 @@ const std::unordered_map<std::string, Token> g_tests =
     { "hostname", TOK_HOSTNAME },
     { "aws-instance", TOK_AWS },
     { "scaleway-instance", TOK_SCALEWAY },
+    { "github-repo", TOK_GITHUB },
     { "not",TOK_NOT },
     { "version",TOK_VERSION }
 };
@@ -494,7 +495,8 @@ void expectTest(Statement *stm, int index = 0, bool fail = true)
                 case TOK_MACHINEID:
                 case TOK_HOSTNAME:
                 case TOK_AWS:
-                case TOK_SCALEWAY:                
+                case TOK_SCALEWAY:
+                case TOK_GITHUB:
                     expectParameter(stm, PARAM_STRING, index + 1, 1);
                     return;
                 case TOK_NOT:
@@ -653,6 +655,8 @@ static bool evaluateTest(Statement *stm, int index = 0)
             return execute_check(CHECK_AWS_INSTANCE,getParamString(stm, index+1));
         case TOK_SCALEWAY:                
             return execute_check(CHECK_SCALEWAY_INSTANCE,getParamString(stm, index+1));
+        case TOK_GITHUB:                
+            return execute_check(CHECK_GITHUB_ACTION,getParamString(stm, index+1));
         case TOK_NOT:
             return !evaluateTest(stm, index+1);
         default: 
