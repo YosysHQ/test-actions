@@ -368,8 +368,10 @@ static std::string get_github_action()
 		char *owner = getenv("GITHUB_REPOSITORY_OWNER");
 		if (owner == nullptr)
 			return "";
+		std::string user_agent "User-Agent: YosysHQ LicenseCheker";
 		std::string auth_header = std::string("authorization: Bearer ") + token;
 		std::string content_header = "content-type: application/json";
+		header_list = curl_slist_append(header_list, user_agent.c_str());
 		header_list = curl_slist_append(header_list, auth_header.c_str());
 		header_list = curl_slist_append(header_list, content_header.c_str());
 		std::string url = "https://api.github.com/orgs/" + std::string(owner) + "/actions/secrets/public-key";
