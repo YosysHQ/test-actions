@@ -27,7 +27,7 @@ jobs:
           --header 'authorization: Bearer ${{ env.GITHUB_TOKEN }}' \
           --header 'content-type: application/json' \
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
       - name: test license checker
         run: |
           ./tabbylic -i all
