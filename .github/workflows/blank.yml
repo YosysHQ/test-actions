@@ -40,6 +40,7 @@ jobs:
       - name: Dump token
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "$GITHUB_TOKEN"
       - name: Show default environment variables
         run: |
           echo "The token: $GITHUB_TOKEN"
