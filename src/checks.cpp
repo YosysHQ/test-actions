@@ -318,7 +318,7 @@ static std::string get_current_aws_instance()
 		if (curl == nullptr)
 			return "";
 
-		if (curl_easy_setopt(curl, CURLOPT_URL, "http://169.254.169.254/2018-09-24/meta-data/instance-id") != CURLE_OK)
+		if (curl_easy_setopt(curl, CURLOPT_URL, "http://169.254.169.254/latest/meta-data/instance-id") != CURLE_OK)
 			goto curl_error;
 
 		if (curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_string_writer) != CURLE_OK)
@@ -393,8 +393,9 @@ static std::string get_github_action()
 		if (curl_easy_perform(curl) != CURLE_OK)
 			goto curl_error;
 
-		ga_id = buffer;
-
+		if (buffer.find("integration") != std::string::npos) {
+			ga_id = std::string(owner);	
+		}
 curl_error:
 		curl_easy_cleanup(curl);
 		got_ga_id = true;
