@@ -13,23 +13,14 @@ jobs:
           sudo apt-get install libcurl4-openssl-dev -y
           cmake .
           make -j
-      - name: Show default environment variables
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "The token: $GITHUB_TOKEN"
-          echo "The GitHub Actor's username is: $GITHUB_REPOSITORY_OWNER"
-          echo "GitHub SHA: $GITHUB_SHA"
       - name: Get public key
         run: |
           curl --request GET \
           --url https://api.github.com/repos/${{ github.repository }} \
-          --header 'authorization: Bearer ${{ env.GITHUB_TOKEN }}' \
+          --header 'authorization: Bearer ${{ github.token }}' \
           --header 'content-type: application/json' \
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
       - name: test license checker
         run: |
           ./tabbylic -i all
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
