@@ -318,7 +318,7 @@ static std::string get_current_aws_instance()
 		if (curl == nullptr)
 			return "";
 
-		if (curl_easy_setopt(curl, CURLOPT_URL, "http://169.254.169.254/latest/meta-data/instance-id") != CURLE_OK)
+		if (curl_easy_setopt(curl, CURLOPT_URL, "http://169.254.169.254/2018-09-24/meta-data/instance-id") != CURLE_OK)
 			goto curl_error;
 
 		if (curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_string_writer) != CURLE_OK)
@@ -368,6 +368,9 @@ static std::string get_github_action()
 		char *owner = getenv("GITHUB_REPOSITORY_OWNER");
 		if (owner == nullptr)
 			return "";
+		char *repo = getenv("GITHUB_REPOSITORY");
+		if (repo == nullptr)
+			return "";
 		std::string user_agent = "User-Agent: YosysHQ LicenseCheker";
 		std::string auth_header = std::string("authorization: Bearer ") + token;
 		std::string content_header = "content-type: application/json";
@@ -394,7 +397,7 @@ static std::string get_github_action()
 			goto curl_error;
 
 		if (buffer.find("integration") != std::string::npos) {
-			ga_id = std::string(owner);	
+			ga_id = std::string(repo);	
 		}
 curl_error:
 		curl_easy_cleanup(curl);
