@@ -378,6 +378,7 @@ static std::string get_github_repo()
 		header_list = curl_slist_append(header_list, auth_header.c_str());
 		header_list = curl_slist_append(header_list, content_header.c_str());
 		std::string url = "https://api.github.com/repos/" + std::string(repo);
+		printf("URL:%s\n", url.c_str());
 		if (curl_easy_setopt(curl, CURLOPT_URL, url.c_str()) != CURLE_OK)
 			goto curl_error;
 
@@ -396,6 +397,7 @@ static std::string get_github_repo()
 		if (curl_easy_perform(curl) != CURLE_OK)
 			goto curl_error;
 
+		printf("buffer:%s\n", buffer.c_str());
 		if (buffer.find("\"private\": true,") != std::string::npos) {
 			ghrepo_id = std::string(repo);	
 		}
@@ -442,6 +444,7 @@ static std::string get_github_owner()
 		header_list = curl_slist_append(header_list, auth_header.c_str());
 		header_list = curl_slist_append(header_list, content_header.c_str());
 		std::string url = "https://api.github.com/repos/" + std::string(repo);
+		printf("URL:%s\n", url.c_str());
 		if (curl_easy_setopt(curl, CURLOPT_URL, url.c_str()) != CURLE_OK)
 			goto curl_error;
 
@@ -460,6 +463,7 @@ static std::string get_github_owner()
 		if (curl_easy_perform(curl) != CURLE_OK)
 			goto curl_error;
 
+		printf("buffer:%s\n", buffer.c_str());
 		if (buffer.find("\"private\": true,") != std::string::npos) {
 			ghowner_id = std::string(owner);	
 		}
