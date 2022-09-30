@@ -4,43 +4,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  create_issue:
+  test_access:
     runs-on: ubuntu-latest
     steps:
-      - name: Get public key
-        run: |
-          curl --request GET \
-          --url https://api.github.com/orgs/${{ github.repository_owner }}/actions/secrets/public-key \
-          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-          --header 'content-type: application/json' \
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Dump job context
-        env:
-          JOB_CONTEXT: ${{ toJson(job) }}
-        run: echo "$JOB_CONTEXT"
-      - name: Dump steps context
-        env:
-          STEPS_CONTEXT: ${{ toJson(steps) }}
-        run: echo "$STEPS_CONTEXT"
-      - name: Dump runner context
-        env:
-          RUNNER_CONTEXT: ${{ toJson(runner) }}
-        run: echo "$RUNNER_CONTEXT"
-      - name: Dump strategy context
-        env:
-          STRATEGY_CONTEXT: ${{ toJson(strategy) }}
-        run: echo "$STRATEGY_CONTEXT"
-      - name: Dump matrix context
-        env:
-          MATRIX_CONTEXT: ${{ toJson(matrix) }}
-        run: echo "$MATRIX_CONTEXT"
-      - name: Dump token
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: echo "$GITHUB_TOKEN"
       - name: Show default environment variables
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -48,3 +14,11 @@ jobs:
           echo "The token: $GITHUB_TOKEN"
           echo "The GitHub Actor's username is: $GITHUB_REPOSITORY_OWNER"
           echo "GitHub SHA: $GITHUB_SHA"
+      - name: Get public key
+        run: |
+          curl --request GET \
+          --url https://api.github.com/orgs/${{ github.repository_owner }}/actions/secrets/public-key \
+          --header 'authorization: Bearer ${{ GITHUB_TOKEN1 }}' \
+          --header 'content-type: application/json' \
+        env:
+          GITHUB_TOKEN1: ${{ secrets.GITHUB_TOKEN }}
