@@ -368,7 +368,7 @@ static std::string get_github_action()
 		char *owner = getenv("GITHUB_REPOSITORY_OWNER");
 		if (owner == nullptr)
 			return "";
-		std::string user_agent "User-Agent: YosysHQ LicenseCheker";
+		std::string user_agent = "User-Agent: YosysHQ LicenseCheker";
 		std::string auth_header = std::string("authorization: Bearer ") + token;
 		std::string content_header = "content-type: application/json";
 		header_list = curl_slist_append(header_list, user_agent.c_str());
