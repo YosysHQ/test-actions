@@ -7,6 +7,11 @@ jobs:
   test_access:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: |
+          cmake .
+          make -j
       - name: Show default environment variables
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -18,7 +23,12 @@ jobs:
         run: |
           curl --request GET \
           --url https://api.github.com/orgs/${{ github.repository_owner }}/actions/secrets/public-key \
-          --header 'authorization: Bearer ${{ env.GITHUB_TOKEN1 }}' \
+          --header 'authorization: Bearer ${{ env.GITHUB_TOKEN }}' \
           --header 'content-type: application/json' \
         env:
-          GITHUB_TOKEN1: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: test license checker
+        run: |
+          ./tabbylic -i all
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
