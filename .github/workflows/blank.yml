@@ -42,6 +42,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: echo "$GITHUB_TOKEN"
       - name: Show default environment variables
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "The token: $GITHUB_TOKEN"
           echo "The GitHub Actor's username is: $GITHUB_REPOSITORY_OWNER"
