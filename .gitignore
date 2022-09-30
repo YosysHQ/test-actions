@@ -1,0 +1,13 @@
+.vscode
+/generated
+/_deps
+/Makefile
+/cmake_install.cmake
+/CMakeFiles
+/CMakeScripts
+/CMakeCache.txt
+/install_manifest.txt
+/libOpenPGP.a
+/tabbylic
+/tests
+/coverage*

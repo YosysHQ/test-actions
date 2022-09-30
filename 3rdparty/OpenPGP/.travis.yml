@@ -1,0 +1,70 @@
+# from <https://github.com/taocpp/PEGTL/blob/master/.travis.yml>
+language: cpp
+
+os: linux
+sudo: false
+
+git:
+  depth: 5
+
+env:
+  - CXX_COMPILER=g++-4.9     GPG_COMPATIBLE=False
+  - CXX_COMPILER=g++-5       GPG_COMPATIBLE=False
+  - CXX_COMPILER=g++-6       GPG_COMPATIBLE=False
+  - CXX_COMPILER=g++-7       GPG_COMPATIBLE=False
+  - CXX_COMPILER=g++-8       GPG_COMPATIBLE=False
+  - CXX_COMPILER=clang++-3.8 GPG_COMPATIBLE=False
+  - CXX_COMPILER=clang++-3.9 GPG_COMPATIBLE=False
+  - CXX_COMPILER=clang++-4.0 GPG_COMPATIBLE=False
+  - CXX_COMPILER=clang++-5.0 GPG_COMPATIBLE=False
+  - CXX_COMPILER=clang++-6.0 GPG_COMPATIBLE=False
+  - CXX_COMPILER=clang++-7   GPG_COMPATIBLE=False
+  - CXX_COMPILER=clang++-8   GPG_COMPATIBLE=False
+  - CXX_COMPILER=g++-4.9     GPG_COMPATIBLE=True
+  - CXX_COMPILER=g++-5       GPG_COMPATIBLE=True
+  - CXX_COMPILER=g++-6       GPG_COMPATIBLE=True
+  - CXX_COMPILER=g++-7       GPG_COMPATIBLE=True
+  - CXX_COMPILER=g++-8       GPG_COMPATIBLE=True
+  - CXX_COMPILER=clang++-3.8 GPG_COMPATIBLE=True
+  - CXX_COMPILER=clang++-3.9 GPG_COMPATIBLE=True
+  - CXX_COMPILER=clang++-4.0 GPG_COMPATIBLE=True
+  - CXX_COMPILER=clang++-5.0 GPG_COMPATIBLE=True
+  - CXX_COMPILER=clang++-6.0 GPG_COMPATIBLE=True
+  - CXX_COMPILER=clang++-7   GPG_COMPATIBLE=True
+  - CXX_COMPILER=clang++-8   GPG_COMPATIBLE=True
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    update: false
+
+before_install:
+  - if [[ "${CXX_COMPILER}" =~ "clang++" ]]; then wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -; sudo apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-$(lsb_release -c | awk '{printf $2}')-${CXX_COMPILER##*-} main" -y; fi
+  - sudo apt-get update
+  - sudo apt-get install "${CXX_COMPILER}" libgmp-dev libbz2-dev zlib1g-dev cmake lcov pkg-config python-pip $(if [[ "${CXX_COMPILER}" =~ "clang++-" ]]; then echo llvm; fi) -y
+
+before_script:
+  - export CXX="${CXX_COMPILER}"
+  - export GTEST_COLOR=1
+  - export OPENPGP_PATH="/tmp/OpenPGP"
+  - export PKG_CONFIG_PATH="${OPENPGP_PATH}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+
+script:
+  # normal build and test
+  - mkdir build
+  - cd build
+  - cmake .. -DCMAKE_INSTALL_PREFIX=${OPENPGP_PATH} -DCMAKE_BUILD_TYPE=Debug -DGPG_COMPATIBLE="${GPG_COMPATIBLE}" -DCODE_COVERAGE=On
+  - cmake --build .
+  - ctest --verbose
+
+  # rebuild the cli as a standalone application using the installed files
+  - make install
+  - ${CXX} -Wall -std=c++11 ../cli/main.cpp ../cli/modules/module.cpp $(pkg-config --cflags --libs OpenPGP) -Wl,-rpath="$(pkg-config --variable=libdir OpenPGP)" -o OpenPGP
+  - ./OpenPGP
+
+after_success:
+  - sudo pip install cpp-coveralls
+  - if [[ "${CXX_COMPILER}" =~ "g++-"     ]]; then export GCOV_TOOL="gcov-${CXX_COMPILER##*-}"; fi
+  - if [[ "${CXX_COMPILER}" =~ "clang++-" ]]; then export GCOV_TOOL="$(realpath ../contrib/lcov/clang.sh)"; fi
+  - cpp-coveralls --gcov "${GCOV_TOOL}" --root .. --build-root . --include include --include src --include cli --exclude usr --exclude tests --exclude cli/tests --gcov-options '\-lp' &> /dev/null

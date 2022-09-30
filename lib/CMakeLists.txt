@@ -1,0 +1,8 @@
+add_library(tabby SHARED main.c)
+target_include_directories(tabby PRIVATE ../src/include)
+target_link_libraries(tabby license OpenPGP_static)
+if(WIN32)
+  target_link_libraries(tabby iphlpapi ws2_32)
+endif()
+set_target_properties(tabby PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
+install(TARGETS tabby DESTINATION lib)
