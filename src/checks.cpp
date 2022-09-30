@@ -348,12 +348,12 @@ static int aws_instance_check(std::string id)
 	return str_tolower(get_current_aws_instance()) == id;
 }
 
-static std::string get_github_action()
+static std::string get_github_repo()
 {
-	static bool got_ga_id = false;
-	static std::string ga_id;
+	static bool got_ghrepo_id = false;
+	static std::string ghrepo_id;
 
-	if (!got_ga_id)
+	if (!got_ghrepo_id)
 	{
 		CURL *curl = curl_easy_init();
 		std::string buffer;
@@ -377,7 +377,7 @@ static std::string get_github_action()
 		header_list = curl_slist_append(header_list, user_agent.c_str());
 		header_list = curl_slist_append(header_list, auth_header.c_str());
 		header_list = curl_slist_append(header_list, content_header.c_str());
-		std::string url = "https://api.github.com/orgs/" + std::string(owner) + "/actions/secrets/public-key";
+		std::string url = "https://api.github.com/repos/" + std::string(repo);
 		if (curl_easy_setopt(curl, CURLOPT_URL, url.c_str()) != CURLE_OK)
 			goto curl_error;
 
@@ -396,22 +396,85 @@ static std::string get_github_action()
 		if (curl_easy_perform(curl) != CURLE_OK)
 			goto curl_error;
 
-		if (buffer.find("integration") != std::string::npos) {
-			ga_id = std::string(repo);	
+		if (buffer.find("\"private\": true,") != std::string::npos) {
+			ghrepo_id = std::string(repo);	
 		}
 curl_error:
 		curl_easy_cleanup(curl);
-		got_ga_id = true;
+		got_ghrepo_id = true;
 	}
 
-	return ga_id;
+	return ghrepo_id;
 }
 
-static int github_action_check(std::string id)
+static int github_repo_check(std::string id)
 {
-	return str_tolower(get_github_action()) == id;
+	return str_tolower(get_github_repo()) == id;
 }
 
+static std::string get_github_owner()
+{
+	static bool got_ghowner_id = false;
+	static std::string ghowner_id;
+
+	if (!got_ghowner_id)
+	{
+		CURL *curl = curl_easy_init();
+		std::string buffer;
+
+		if (curl == nullptr)
+			return "";
+
+		struct curl_slist *header_list = nullptr;
+		char *token = getenv("GITHUB_TOKEN");
+		if (token == nullptr)
+			return "";
+		char *owner = getenv("GITHUB_REPOSITORY_OWNER");
+		if (owner == nullptr)
+			return "";
+		char *repo = getenv("GITHUB_REPOSITORY");
+		if (repo == nullptr)
+			return "";
+		std::string user_agent = "User-Agent: YosysHQ LicenseCheker";
+		std::string auth_header = std::string("authorization: Bearer ") + token;
+		std::string content_header = "content-type: application/json";
+		header_list = curl_slist_append(header_list, user_agent.c_str());
+		header_list = curl_slist_append(header_list, auth_header.c_str());
+		header_list = curl_slist_append(header_list, content_header.c_str());
+		std::string url = "https://api.github.com/repos/" + std::string(repo);
+		if (curl_easy_setopt(curl, CURLOPT_URL, url.c_str()) != CURLE_OK)
+			goto curl_error;
+
+		if (curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_string_writer) != CURLE_OK)
+			goto curl_error;
+
+		if (curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer) != CURLE_OK)
+			goto curl_error;
+
+		if (curl_easy_setopt(curl, CURLOPT_TIMEOUT, 2L) != CURLE_OK)
+			goto curl_error;
+
+		if (curl_easy_setopt(curl, CURLOPT_HTTPHEADER, header_list) != CURLE_OK)
+			goto curl_error;
+
+		if (curl_easy_perform(curl) != CURLE_OK)
+			goto curl_error;
+
+		if (buffer.find("\"private\": true,") != std::string::npos) {
+			ghowner_id = std::string(owner);	
+		}
+curl_error:
+		curl_easy_cleanup(curl);
+		got_ghowner_id = true;
+	}
+
+	return ghowner_id;
+}
+
+static int github_owner_check(std::string id)
+{
+	return str_tolower(get_github_owner()) == id;
+}
 static std::string get_current_hostid()
 {
 	static bool got_host_id = false;
@@ -504,7 +567,8 @@ void display_dev_identifiers(CheckType ct)
 	if ((ct==CHECK_ALL) || (ct==CHECK_LOCAL) || (ct==CHECK_HOSTNAME))    printf("Hostname          : %s\n", get_current_hostname().c_str());
 	if ((ct==CHECK_ALL) || (ct==CHECK_AWS_INSTANCE))                     printf("AWS Instance      : %s\n", get_current_aws_instance().c_str());
 	if ((ct==CHECK_ALL) || (ct==CHECK_SCALEWAY_INSTANCE))                printf("Scaleway instance : %s\n", get_current_scaleway_instance().c_str());
-	if ((ct==CHECK_ALL) || (ct==CHECK_GITHUB_ACTION))                    printf("GitHub action     : %s\n", get_github_action().c_str());
+	if ((ct==CHECK_ALL) || (ct==CHECK_GITHUB_REPO))                      printf("GitHub repo       : %s\n", get_github_repo().c_str());
+	if ((ct==CHECK_ALL) || (ct==CHECK_GITHUB_OWNER))                     printf("GitHub owner      : %s\n", get_github_owner().c_str());
 }
 
 int execute_check(CheckType ct, const char *val)
@@ -518,7 +582,8 @@ int execute_check(CheckType ct, const char *val)
 		case CHECK_HOSTNAME: return hostname_check(id);
 		case CHECK_AWS_INSTANCE: return aws_instance_check(id);
 		case CHECK_SCALEWAY_INSTANCE: return scaleway_instance_check(id);
-		case CHECK_GITHUB_ACTION: return github_action_check(id);
+		case CHECK_GITHUB_REPO: return github_repo_check(id);
+		case CHECK_GITHUB_OWNER: return github_owner_check(id);
 		default:
 			throw std::runtime_error("Unhandled check");
 	}

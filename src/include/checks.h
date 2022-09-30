@@ -11,7 +11,8 @@ enum CheckType {
     CHECK_HOSTNAME,
     CHECK_AWS_INSTANCE,
     CHECK_SCALEWAY_INSTANCE,
-    CHECK_GITHUB_ACTION
+    CHECK_GITHUB_REPO,
+    CHECK_GITHUB_OWNER
 };
 
 int execute_check(CheckType ct, const char *id);

@@ -30,7 +30,8 @@ enum Token
     TOK_HOSTNAME,
     TOK_AWS,
     TOK_SCALEWAY,
-    TOK_GITHUB,
+    TOK_GITHUB_REPO,
+    TOK_GITHUB_OWNER,
     TOK_NOT,
     TOK_VERSION,
 
