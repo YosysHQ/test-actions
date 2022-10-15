@@ -1,4 +1,4 @@
-name: Test
+name: Tabby
 
 on:
   workflow_dispatch:
