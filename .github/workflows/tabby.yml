@@ -9,7 +9,8 @@ jobs:
     steps:
       - name: Build
         run: |
-          wget https://drive.google.com/file/d/1tTtDLHRp8179Pdjw9HOy7YoBEq4xTPkX/view?usp=sharing
+          pip install gdown
+          gdown https://drive.google.com/file/d/1tTtDLHRp8179Pdjw9HOy7YoBEq4xTPkX
           tar xvfz tabby-linux-x64-20221011.tgz
       - name: test license checker
         run: |
