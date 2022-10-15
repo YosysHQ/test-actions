@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: Build
         run: |
-          wget https://doc-0c-98-docs.googleusercontent.com/docs/securesc/vl5a9lf2qnuqkgn3v0h2e6vqemiq8oc3/lhvt45b1vshmlo4qui2m33p6t1rpqrf8/1665863325000/18052812699909254421/18052812699909254421/1tTtDLHRp8179Pdjw9HOy7YoBEq4xTPkX?e=download&ax=ALW9-sDnAeiQdgCdvIn29w80w6ET4adCq072WfZjUsTdCUKnCM5dgg50Ss-Rncnv2c9zEGB2bAL0wFwtM6bfhe9OamVr0lEEDMA7GG5g7DPxfutm3WVQd0jgrGutZocm52G53ZQqYrGiAlLopLyry9nTErVZGJMboP7iVV6BFHwIs5kVLQpSRo3CoqSEqtI8rK7AIYmNn2rgEPduy78ijzAd7gt03X7BVSSfZDW9Br9Hgu4vlN9wKFb59S4GjBMgpkqYBVNcCTz8bda4D5mWMgEpnsgyaxLSS_xk9Yl0RqCOJPotlat8iRzIFSjT6xp_sSKnJ6-xQoT5rn8bKA7QiujPYNzuYM96x_lr9zUXk5zOj7kACt3-wKmjLed7dNgEp3anHZh1eA3GmRoZXeHzlf_nqhWQG2cw80bXrF66WneNwQcDINK5bLiPZaULZqSaOv-qI7AkJQ8wMxbx-P6K_R4NNmAw-ld3MPIuI1ja-0AFRkgXchQ9trMPF4KfZiL-zABnvMKfwfn711v7HMBv-27ijfHPyDTto7gEMJI7c0duZDlfDAa3xs1i1PiPEIG6x_aUcIR2VjAXPzy1dVldEPDIVZENdMiDAwqr7HIVtyxMYw2P-opcmAhm8eNZenMftAyFEwlJreY-buucRCecEPObRpeKqFHakUVTEn71KDSSGZbLdDU-A78jVHAhftjqJvNvp2qw2NeC9_MWH9Zr9Jd6inU6_w5y7B0qdB0S4r03HLlzT1HM-zUHiRqkvyK5ttFtYmrQtmATsheudeCdR6cQSWtkQ1TOcoPfSUZ2ijcH_gO-IdjdJrbu_-2ybQtazKyKDB7RZF2NjaTyuIEKj8LwkPDslBlcST8C6o7tbl_f2v8augj_J8q6iVx32ZkgSuZChffh4wphc-2mvoRZMR7m9dUjIPPkq93ZTQF9jKB0jO4Qi8FYKLZz7zdspqcx2S5N82lTHi9ctMVpjF8K_zpJqh4w3LJf3_VRuLbV&uuid=c76f210f-1c11-4a76-9f6c-66618e0dbc7d&authuser=1&nonce=pf1a89v78d0dc&user=18052812699909254421&hash=uftt3258amaucnn0s8l0g2abs92j0chk 
+          gdown https://drive.google.com/file/d/1tTtDLHRp8179Pdjw9HOy7YoBEq4xTPkX/view?usp=sharing --fuzzy
           tar xvfz tabby-linux-x64-20221011.tgz
       - name: test license checker
         run: |
