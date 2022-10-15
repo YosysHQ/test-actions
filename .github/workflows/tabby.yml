@@ -1,0 +1,18 @@
+name: Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test_access:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        run: |
+          wget https://drive.google.com/file/d/1tTtDLHRp8179Pdjw9HOy7YoBEq4xTPkX/view?usp=sharing
+          tar xvfz tabby-linux-x64-20221011.tgz
+      - name: test license checker
+        run: |
+          ./tabby/bin/tabbylic -i all
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
