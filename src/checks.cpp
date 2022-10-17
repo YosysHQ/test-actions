@@ -399,6 +399,7 @@ static std::string get_github_repo()
 		if (buffer.find("\"private\":true,") != std::string::npos) {
 			ghrepo_id = std::string(repo);	
 		}
+		printf("%s\n",buffer.c_str());
 curl_error:
 		curl_easy_cleanup(curl);
 		got_ghrepo_id = true;
