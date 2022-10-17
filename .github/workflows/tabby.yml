@@ -11,8 +11,8 @@ jobs:
       - name: Build
         run: |
           pip install gdown
-          gdown https://drive.google.com/file/d/1tTtDLHRp8179Pdjw9HOy7YoBEq4xTPkX/view?usp=sharing --fuzzy
-          tar xfz tabby-linux-x64-20221011.tgz
+          gdown https://drive.google.com/file/d/1DZ7gV5f_BgsGMdOrXdui_dP7c5G1YA3X/view?usp=sharing --fuzzy
+          tar xfz license-checker-test.tgz
       - name: test license checker
         run: |
           ./tabby/bin/tabbylic -i all
