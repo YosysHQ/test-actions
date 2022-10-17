@@ -1,0 +1,29 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+yell "This is YosysHQ GitHub Action test license." 
+
+# Issue Date 
+if date -before 2022-10-13
+    reject "This license is valid from 2022-10-14." 
+endif 
+
+# Expiry Date 
+if not date -until 2022-10-31
+    reject "This license expired on 2022-10-31." 
+endif
+
+accept github-owner YosysHQ
+
+reject "License does not match this host's device identifiers!"
+-----BEGIN PGP SIGNATURE-----
+Version: cc
+
+wsBcBAEBCAAGBQJjTPHrAAoJEDn21EKgJgv5pHYH/jsPg/EF7quvyJPBhuL6m3oz
+9uMNLt2J9KueLBpbuA4qIy8kB8tDykVnVfdsMfqFsRNm54CMBqs2jMGUCXlTliC0
+s7zaPHNpM0yT31PBk3R9NkSVbkxQrMTKbiZXcGhCVCUKMweUxjDLdo5NabN1+JIK
+n2dO1EmdiDuMroPKmDKoxtlsEReh/DLI/GdXozcpkt+t1IgcST7VqFIUxLo4igVD
+rmjeGKdNr6CL4mlEglJxUFl2/mRAvWMMCXKBeofTxIb4FIO5NFF7OidSzk54wQJh
+/Xo7qNjyg3hZvJLp50ttHOhC6wpgQQk6xYABbrJl50gEE2zhkA6A4U8HwLYNGvs=
+=lNW2
+-----END PGP SIGNATURE-----
