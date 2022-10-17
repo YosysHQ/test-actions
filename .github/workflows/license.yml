@@ -1,4 +1,4 @@
-name: Tabby
+name: License
 
 on:
   workflow_dispatch:
