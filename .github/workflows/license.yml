@@ -18,8 +18,3 @@ jobs:
           ./tabby/bin/tabbylic -i all
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - name: Build
-        run: |
-          ./tabby/bin/tabbylic -P -c action-license.lic
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
