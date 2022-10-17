@@ -21,3 +21,5 @@ jobs:
       - name: Build
         run: |
           ./tabby/bin/tabbylic -P -c action-license.lic
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
