@@ -17,3 +17,7 @@ jobs:
           ./tabby/bin/tabbylic -i all
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/checkout@v2
+      - name: Build
+        run: |
+          ./tabby/bin/tabbylic -P -c action-license.lic
