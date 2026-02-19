@@ -15,24 +15,8 @@ on:
 #  workflow_dispatch:
 
 jobs:
-  pre_job:
-    runs-on: ubuntu-latest
-    outputs:
-      should_skip: ${{ steps.skip_check.outputs.should_skip }}
-    steps:
-      - id: skip_check
-        uses: fkirc/skip-duplicate-actions@v5
-        with:
-          # don't run on documentation changes
-          paths_ignore: '["**/README.md", "docs/**", "guidelines/**"]'
-          # cancel previous builds if a new commit is pushed
-          # but never cancel main
-          cancel_others: ${{ github.ref != 'refs/heads/main' }}
-
   test-compile:
     runs-on: ${{ matrix.os }}
-    needs: pre_job
-    if: needs.pre_job.outputs.should_skip != 'true'
     env:
       CXXFLAGS: ${{ startsWith(matrix.compiler, 'gcc') && '-Wp,-D_GLIBCXX_ASSERTIONS' || ''}}
       CC_SHORT: ${{ startsWith(matrix.compiler, 'gcc') && 'gcc' || 'clang' }}

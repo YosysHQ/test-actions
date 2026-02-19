@@ -14,40 +14,9 @@ on:
 #  workflow_dispatch:
 
 jobs:
-  pre_job:
-    runs-on: ubuntu-latest
-    outputs:
-      should_skip: ${{ steps.skip_check.outputs.should_skip }}
-    steps:
-      - id: skip_check
-        uses: fkirc/skip-duplicate-actions@v5
-        with:
-          # don't run on documentation changes
-          paths_ignore: '["**/README.md", "docs/**", "guidelines/**"]'
-          # cancel previous builds if a new commit is pushed
-          # but never cancel main
-          cancel_others: ${{ github.ref != 'refs/heads/main' }}
-
-  pre_docs_job:
-    runs-on: ubuntu-latest
-    outputs:
-      should_skip: ${{ steps.skip_check.outputs.should_skip }}
-    steps:
-      - id: skip_check
-        uses: fkirc/skip-duplicate-actions@v5
-        with:
-          # don't run on readme changes
-          paths_ignore: '["**/README.md"]'
-          # cancel previous builds if a new commit is pushed
-          # but never cancel main
-          cancel_others: ${{ github.ref != 'refs/heads/main' }}
-
   build-yosys:
     name: Reusable build
     runs-on: ${{ matrix.os }}
-    # pre_job is a subset of pre_docs_job, so we can always build for pre_docs_job
-    needs: pre_docs_job
-    if: needs.pre_docs_job.outputs.should_skip != 'true'
     env:
       CC: clang
     strategy:
@@ -96,8 +65,7 @@ jobs:
   test-yosys:
     name: Run tests
     runs-on: ${{ matrix.os }}
-    needs: [build-yosys, pre_job]
-    if: needs.pre_job.outputs.should_skip != 'true'
+    needs: [build-yosys]
     env:
       CC: clang
     strategy:
@@ -145,8 +113,7 @@ jobs:
   test-cells:
     name: Run test_cell
     runs-on: ${{ matrix.os }}
-    needs: [build-yosys, pre_job]
-    if: needs.pre_job.outputs.should_skip != 'true'
+    needs: [build-yosys]
     env:
       CC: clang
     strategy:
