@@ -7,24 +7,35 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+#on:
+#  # always test main
+#  push:
+#    branches:
+#      - main
+#  merge_group:
+#  # test PRs
+#  pull_request:
+#  # allow triggering tests, ignores skip check
+#  workflow_dispatch:
+
 jobs:
-  pre-job:
-    runs-on: ubuntu-latest
-    outputs:
-      should_skip: ${{ steps.skip_check.outputs.should_skip }}
-    steps:
-      - id: skip_check
-        uses: fkirc/skip-duplicate-actions@v5
-        with:
-          # don't run on documentation changes
-          paths_ignore: '["**/README.md", "docs/**", "guidelines/**"]'
-          # cancel previous builds if a new commit is pushed
-          # but never cancel main and merge_group
-          cancel_others: ${{ !startsWith(github.ref, 'refs/heads/main') && github.event_name != 'merge_group' }}
+#  pre-job:
+#    runs-on: ubuntu-latest
+#    outputs:
+#      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+#    steps:
+#      - id: skip_check
+#        uses: fkirc/skip-duplicate-actions@v5
+#        with:
+#          # don't run on documentation changes
+#          paths_ignore: '["**/README.md", "docs/**", "guidelines/**"]'
+#          # cancel previous builds if a new commit is pushed
+#          # but never cancel main
+#          cancel_others: ${{ github.ref != 'refs/heads/main' }}
 
   test-verific:
-    needs: pre-job
-    if: ${{ needs.pre-job.outputs.should_skip != 'true' && github.repository_owner == 'YosysHQ' }}
+    #needs: pre-job
+    #if: ${{ needs.pre-job.outputs.should_skip != 'true' && github.repository == 'YosysHQ/Yosys' }}
     runs-on: [self-hosted, linux, x64, fast]
     steps:
       - name: Checkout Yosys
@@ -78,7 +89,7 @@ jobs:
 
 #  test-pyosys:
 #    needs: pre-job
-#    if: ${{ needs.pre-job.outputs.should_skip != 'true' && github.repository_owner == 'YosysHQ' }}
+#    if: ${{ needs.pre-job.outputs.should_skip != 'true' && github.repository == 'YosysHQ/Yosys' }}
 #    runs-on: [self-hosted, linux, x64, fast]
 #    steps:
 #      - name: Checkout Yosys
@@ -114,3 +125,15 @@ jobs:
 #        run: |
 #          export PYTHONPATH=${GITHUB_WORKSPACE}/.local/usr/lib/python3/site-packages:$PYTHONPATH
 #          python3 tests/pyosys/run_tests.py
+  fail_job:
+    name: Merge Queue / Manual Test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        # Let GitHub handle branch selection from "Use workflow from" dropdown
+      - name: Always fail
+        run: |
+          echo "This job is designed to always fail!"
+          exit 1
