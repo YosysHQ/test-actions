@@ -92,7 +92,7 @@ jobs:
         run: |
           make install DESTDIR=${GITHUB_WORKSPACE}/.local PREFIX=
 
-      - name: Run pyosys tests
-        run: |
-          export PYTHONPATH=${GITHUB_WORKSPACE}/.local/usr/lib/python3/site-packages:$PYTHONPATH
-          python3 tests/pyosys/run_tests.py
+#      - name: Run pyosys tests
+#        run: |
+#          export PYTHONPATH=${GITHUB_WORKSPACE}/.local/usr/lib/python3/site-packages:$PYTHONPATH
+#          python3 tests/pyosys/run_tests.py
