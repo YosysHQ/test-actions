@@ -151,8 +151,7 @@ jobs:
   test-docs:
     name: Run docs tests
     runs-on: ${{ matrix.os }}
-    needs: [build-yosys, pre_docs_job]
-    if: needs.pre_docs_job.outputs.should_skip != 'true'
+    needs: [build-yosys]
     env:
       CC: clang
     strategy:
@@ -194,8 +193,7 @@ jobs:
   test-docs-build:
     name: Try build docs
     runs-on: [self-hosted, linux, x64, fast]
-    needs: [pre_docs_job]
-    if: ${{ needs.pre_docs_job.outputs.should_skip != 'true' && github.repository == 'YosysHQ/Yosys' }}
+    if: github.repository_owner == 'YosysHQ'
     strategy:
       matrix:
         docs-target: [html, latexpdf]

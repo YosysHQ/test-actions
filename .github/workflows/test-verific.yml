@@ -9,6 +9,7 @@ on:
 
 jobs:
   test-verific:
+    if: github.repository_owner == 'YosysHQ'
     runs-on: [self-hosted, linux, x64, fast]
     steps:
       - name: Checkout Yosys
@@ -61,6 +62,7 @@ jobs:
 #          make -C sby run_ci
 
   test-pyosys:
+    if: github.repository_owner == 'YosysHQ'
     runs-on: [self-hosted, linux, x64, fast]
     steps:
       - name: Checkout Yosys
