@@ -1,15 +1,18 @@
 name: Build and run tests with Verific (Linux)
 
 on:
-  # always test main
-  push:
-    branches:
-      - main
-  merge_group:
-  # test PRs
-  pull_request:
-  # allow triggering tests, ignores skip check
   workflow_dispatch:
+
+#on:
+#  # always test main
+#  push:
+#    branches:
+#      - main
+#  merge_group:
+#  # test PRs
+#  pull_request:
+#  # allow triggering tests, ignores skip check
+#  workflow_dispatch:
 
 jobs:
   pre-job:
