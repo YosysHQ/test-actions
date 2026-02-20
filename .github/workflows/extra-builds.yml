@@ -1,6 +1,7 @@
 name: Test extra build flows
 
 on:
+  pull_request:
   merge_group:
   push:
     branches: [ main ]
@@ -9,6 +10,7 @@ on:
 jobs:
   vs-prep:
     name: Prepare Visual Studio build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +27,7 @@ jobs:
 
   vs-build:
     name: Visual Studio build
+    if: github.event_name != 'pull_request'
     runs-on: windows-latest
     needs: [vs-prep]
     steps:
@@ -42,6 +45,7 @@ jobs:
 
   wasi-build:
     name: WASI build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -87,6 +91,7 @@ jobs:
 
   nix-build:
     name: "Build nix flake"
+    if: github.event_name != 'pull_request'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
