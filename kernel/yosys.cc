@@ -1120,7 +1120,6 @@ struct HistoryPass : public Pass {
 } HistoryPass;
 #endif
 
-
 struct ScriptCmdPass : public Pass {
 	ScriptCmdPass() : Pass("script", "execute commands from file or wire") { }
 	void help() override {
