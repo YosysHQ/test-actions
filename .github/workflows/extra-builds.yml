@@ -10,7 +10,7 @@ on:
 jobs:
   vs-prep:
     name: Prepare Visual Studio build
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,7 +27,7 @@ jobs:
 
   vs-build:
     name: Visual Studio build
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch'
     runs-on: windows-latest
     needs: [vs-prep]
     steps:
@@ -45,7 +45,7 @@ jobs:
 
   wasi-build:
     name: WASI build
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -91,18 +91,13 @@ jobs:
 
   nix-build:
     name: "Build nix flake"
+    if: github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
       fail-fast: false
     steps:
-      - name: Decide skip
-        run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "Skipping"
-            exit 0
-          fi
       - uses: actions/checkout@v4
         with:
           submodules: true
@@ -111,3 +106,23 @@ jobs:
         with:
           install_url: https://releases.nixos.org/nix/nix-2.30.0/install
       - run: nix build .?submodules=1 -L
+
+  nix-build-result:
+    name: nix-build-result
+    name: "Build nix flake - results"
+    needs: nix-build
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Evaluate result
+        run: |
+          echo "Result: ${{ needs.nix-build.result }}"
+
+          if [[ "${{ needs.nix-build.result }}" == "success" || \
+                "${{ needs.nix-build.result }}" == "skipped" ]]; then
+            echo "OK"
+            exit 0
+          else
+            echo "Failure"
+            exit 1
+          fi
