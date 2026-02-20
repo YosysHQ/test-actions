@@ -1095,6 +1095,8 @@ struct ShellPass : public Pass {
 	}
 } ShellPass;
 
+
+
 #if defined(YOSYS_ENABLE_READLINE) || defined(YOSYS_ENABLE_EDITLINE)
 struct HistoryPass : public Pass {
 	HistoryPass() : Pass("history", "show last interactive commands") { }
