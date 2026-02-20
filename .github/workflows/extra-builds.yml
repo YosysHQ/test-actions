@@ -96,8 +96,13 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
       fail-fast: false
-    if: github.event_name != 'pull_request'
     steps:
+      - name: Decide skip
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "Skipping"
+            exit 0
+          fi
       - uses: actions/checkout@v4
         with:
           submodules: true
