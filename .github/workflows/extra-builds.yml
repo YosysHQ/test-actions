@@ -91,12 +91,12 @@ jobs:
 
   nix-build:
     name: "Build nix flake"
-    if: github.event_name != 'pull_request'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
       fail-fast: false
+    if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v4
         with:
