@@ -108,7 +108,6 @@ jobs:
       - run: nix build .?submodules=1 -L
 
   nix-build-result:
-    name: nix-build-result
     name: "Build nix flake - results"
     needs: nix-build
     if: always()
