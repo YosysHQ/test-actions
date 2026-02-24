@@ -74,7 +74,6 @@ jobs:
           export PATH := $(pwd)/${WASI_SDK}/bin:$(pwd)/flex-prefix/bin:${PATH}
           WASI_SYSROOT := $(pwd)/${WASI_SDK}/share/wasi-sysroot
 
-          PRETTY := 0
           CONFIG := wasi
           PREFIX := /
 
@@ -83,7 +82,7 @@ jobs:
           ENABLE_PLUGINS := 0
           ENABLE_ZLIB := 0
 
-          CXXFLAGS += -I$(pwd)/flex-prefix/include -flto
+          CXXFLAGS += -I$(pwd)/flex-prefix/include
           LINKFLAGS += -Wl,-z,stack-size=8388608 -Wl,--stack-first -Wl,--strip-all
           END
 
