@@ -8,7 +8,7 @@ CONFIG := none
 
 # features (the more the better)
 ENABLE_TCL := 1
-ENABLE_ABC := 0
+ENABLE_ABC := 1
 ENABLE_GLOB := 1
 ENABLE_PLUGINS := 1
 ENABLE_READLINE := 1
@@ -93,7 +93,7 @@ EXTRA_TARGETS =
 TARGETS = $(PROGRAM_PREFIX)yosys$(EXE) $(PROGRAM_PREFIX)yosys-config
 
 PRETTY = 1
-SMALL = 1
+SMALL = 0
 
 all: top-all
 

@@ -3,15 +3,30 @@ name: Test extra build flows
 on:
   pull_request:
   merge_group:
-  push:
-    branches: [ main ]
+  #push:
+  #  branches: [ main ]
   workflow_dispatch:
 
 jobs:
+  pre_job:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@v5
+        with:
+          # don't run on documentation changes
+          paths_ignore: '["**/README.md", "docs/**", "guidelines/**"]'
+          # cancel previous builds if a new commit is pushed
+          # but never cancel main
+          cancel_others: ${{ github.ref != 'refs/heads/main' }}
+
   vs-prep:
     name: Prepare Visual Studio build
-    if: github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    needs: [pre_job]
+    if: (github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch') && needs.pre_job.outputs.should_skip != 'true'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,9 +42,9 @@ jobs:
 
   vs-build:
     name: Visual Studio build
-    if: github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch'
     runs-on: windows-latest
-    needs: [vs-prep]
+    needs: [vs-prep, pre_job]
+    if: (github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch') && needs.pre_job.outputs.should_skip != 'true'
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -45,7 +60,8 @@ jobs:
 
   wasi-build:
     name: WASI build
-    if: github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch'
+    needs: pre_job
+    if: (github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch') && needs.pre_job.outputs.should_skip != 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -90,7 +106,8 @@ jobs:
 
   nix-build:
     name: "Build nix flake"
-    if: github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch'
+    needs: pre_job
+    if: (github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch') && needs.pre_job.outputs.should_skip != 'true'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -106,21 +123,12 @@ jobs:
           install_url: https://releases.nixos.org/nix/nix-2.30.0/install
       - run: nix build .?submodules=1 -L
 
-  nix-build-result:
-    name: "Build nix flake - results"
-    needs: nix-build
-    if: always()
+  extra-builds-result:
     runs-on: ubuntu-latest
+    needs:
+      - vs-build
+      - wasi-build
+      - nix-build
+    if: always() && !contains(join(needs.*.result, ','), 'failure') && !contains(join(needs.*.result, ','), 'cancelled')
     steps:
-      - name: Evaluate result
-        run: |
-          echo "Result: ${{ needs.nix-build.result }}"
-
-          if [[ "${{ needs.nix-build.result }}" == "success" || \
-                "${{ needs.nix-build.result }}" == "skipped" ]]; then
-            echo "OK"
-            exit 0
-          else
-            echo "Failure"
-            exit 1
-          fi
+      - run: echo "All good"

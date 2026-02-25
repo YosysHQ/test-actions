@@ -1,8 +1,10 @@
 name: Build docs artifact with Verific
 
 on:
+  pull_request:
+  merge_group:
+  push:
   workflow_dispatch:
-#on: [push, pull_request, merge_group]
 
 jobs:
   check_docs_rebuild:
@@ -28,7 +30,7 @@ jobs:
     # docs builds are needed for anything on main, any tagged versions, and any tag
     # or branch starting with docs-preview
     needs: check_docs_rebuild
-    if: ${{ needs.check_docs_rebuild.outputs.should_skip != 'true' && github.repository == 'YosysHQ/Yosys' }}
+    if: ${{ needs.check_docs_rebuild.outputs.should_skip != 'true' && github.repository_owner == 'YosysHQ' }}
     runs-on: [self-hosted, linux, x64, fast]
     steps:
       - name: Checkout Yosys
@@ -83,3 +85,11 @@ jobs:
           webhook_url: ${{ secrets.RTDS_WEBHOOK_URL }}
           webhook_token: ${{ secrets.RTDS_WEBHOOK_TOKEN }}
           commit_ref: ${{ github.ref }}
+
+  prepare-docs-result:
+    runs-on: ubuntu-latest
+    needs:
+      - prepare-docs
+    if: always() && !contains(join(needs.*.result, ','), 'failure') && !contains(join(needs.*.result, ','), 'cancelled')
+    steps:
+      - run: echo "All good"
