@@ -4,6 +4,8 @@ on:
   pull_request:
   merge_group:
   push:
+    branches: [ main, "docs-preview/**" ]
+    tags: [ "*" ]
   workflow_dispatch:
 
 jobs:
@@ -30,7 +32,7 @@ jobs:
     # docs builds are needed for anything on main, any tagged versions, and any tag
     # or branch starting with docs-preview
     needs: check_docs_rebuild
-    if: ${{ needs.check_docs_rebuild.outputs.should_skip != 'true' && github.repository_owner == 'YosysHQ' }}
+    if: ${{ needs.check_docs_rebuild.outputs.should_skip != 'true' && github.repository == 'YosysHQ/Yosys' }}
     runs-on: [self-hosted, linux, x64, fast]
     steps:
       - name: Checkout Yosys
