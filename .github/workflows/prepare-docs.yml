@@ -41,7 +41,7 @@ jobs:
     # docs builds are needed for anything on main, any tagged versions, and any tag
     # or branch starting with docs-preview
     needs: check_docs_rebuild
-    if: ${{ needs.check_docs_rebuild.outputs.should_skip != 'true' && github.repository == 'YosysHQ/Yosys' }}
+    if: ${{ needs.check_docs_rebuild.outputs.should_skip != 'true' && github.repository_owner == 'YosysHQ' }}
     runs-on: [self-hosted, linux, x64, fast]
     steps:
       - name: Checkout Yosys
@@ -90,7 +90,7 @@ jobs:
           make -C docs html -j$procs TARGETS= EXTRA_TARGETS=
 
       - name: Trigger RTDs build
-        if: ${{ needs.check_docs_rebuild.outputs.docs_export == 'true' }}
+        if: ${{ needs.check_docs_rebuild.outputs.docs_export == 'true' && github.repository == 'YosysHQ/Yosys' }}
         uses: dfm/rtds-action@v1.1.0
         with:
           webhook_url: ${{ secrets.RTDS_WEBHOOK_URL }}
