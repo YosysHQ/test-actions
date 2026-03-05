@@ -1055,6 +1055,8 @@ void shell(RTLIL::Design *design)
 	log_cmd_error_throw = false;
 }
 
+
+
 struct ShellPass : public Pass {
 	ShellPass() : Pass("shell", "enter interactive command mode") { }
 	void help() override {
