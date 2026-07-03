@@ -116,7 +116,6 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: YosysHQ/test-actions
           files: build/coverage.info,report.xml
-          report_type: test_results
           disable_search: true
 
       - name: Skip generating files
