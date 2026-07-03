@@ -184,6 +184,11 @@ struct AddPass : public Pass {
 				argidx++;
 				break;
 			}
+			if (arg == "-nomod") {
+				mod_mode = false;
+				argidx++;
+				break;
+			}
 			if (arg.length() > 0 && arg[0] == '-' && is_formal_celltype(arg.substr(1))) {
 				if (argidx + 1 >= args.size())
 					break;
