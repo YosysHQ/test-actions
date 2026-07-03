@@ -86,6 +86,7 @@ jobs:
           make -C tests/svtypes
 
       - name: Run coverage
+        if: always()
         run: |
           make -C tests coverage
           make -C tests clean_coverage
@@ -111,6 +112,7 @@ jobs:
 #          fi
 
       - name: Upload coverage reports to Codecov
+        if: always()
         uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
