@@ -115,13 +115,9 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: YosysHQ/test-actions
-          files: build/coverage.info
+          files: build/coverage.info,report.xml
+          report_type: test_results
           disable_search: true
-
-      - name: Upload test results
-        uses: codecov/test-results-action@v1
-        with:
-          files: report.xml
 
       - name: Skip generating files
         if: ${{ github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch' }}
