@@ -113,7 +113,7 @@ jobs:
         uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          slug: YosysHQ/yosys
+          slug: YosysHQ/test-actions
           files: build/coverage.info
           disable_search: true
 
