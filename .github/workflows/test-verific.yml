@@ -89,6 +89,7 @@ jobs:
         run: |
           make -C tests coverage
           make -C tests clean_coverage
+          python3 tests/report.py tests
 
 #      - name: Push coverage
 #        if: ${{ github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch' }}
@@ -116,6 +117,11 @@ jobs:
           slug: YosysHQ/test-actions
           files: build/coverage.info
           disable_search: true
+
+      - name: Upload test results
+        uses: codecov/test-results-action@v1
+        with:
+          files: report.xml
 
       - name: Skip generating files
         if: ${{ github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch' }}
