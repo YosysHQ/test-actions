@@ -184,7 +184,7 @@ struct AddPass : public Pass {
 				argidx++;
 				break;
 			}
-			if (arg == "-nomod") {
+			if (arg == "-nomod2") {
 				mod_mode = false;
 				argidx++;
 				break;
